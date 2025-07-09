@@ -1,0 +1,38 @@
+{
+    "name": "Scriptable Widget Playground",
+    "short_name": "Widget Playground",
+    "description": "Interactive playground for Scriptable iOS widgets. Customize, preview, and generate code for beautiful widgets.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#007AFF",
+    "orientation": "portrait-primary",
+    "categories": ["productivity", "utilities", "developer"],
+    "lang": "en",
+    "icons": [
+        {
+            "src": "images/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "images/screenshot-desktop.png",
+            "sizes": "1280x800",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "images/screenshot-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ]
+}

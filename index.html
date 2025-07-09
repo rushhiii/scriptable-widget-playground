@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scriptable Widget Playground</title>
+    <meta name="description" content="Interactive playground for Scriptable iOS widgets. Customize, preview, and generate code for beautiful widgets.">
+    <meta name="keywords" content="scriptable, ios, widgets, playground, customization, code generator">
+    <meta name="author" content="Rushi">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rushhiii.github.io/Scriptable-Playground/">
+    <meta property="og:title" content="Scriptable Widget Playground">
+    <meta property="og:description" content="Interactive playground for Scriptable iOS widgets. Customize, preview, and generate code for beautiful widgets.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rushhiii.github.io/Scriptable-Playground/">
+    <meta property="twitter:title" content="Scriptable Widget Playground">
+    <meta property="twitter:description" content="Interactive playground for Scriptable iOS widgets. Customize, preview, and generate code for beautiful widgets.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007AFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Widget Playground">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h1>Scriptable Widget Playground</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="https://github.com/rushhiii/Scriptable-Widgets" class="github-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github"></i>
+                        View on GitHub
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Interactive iOS Widget Playground</h2>
+                <p>Customize, preview, and generate code for beautiful Scriptable widgets</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="widgetCount">8</span>
+                        <span class="stat-label">Widgets</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Themes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">∞</span>
+                        <span class="stat-label">Configurations</span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <button class="cta-button" onclick="scrollToWidgets()">
+                        <i class="fas fa-rocket"></i>
+                        Explore Widgets
+                    </button>
+                    <a href="https://scriptable.app" class="secondary-button" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-download"></i>
+                        Get Scriptable
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Widget Grid -->
+        <section class="widgets-section" id="widgetsSection">
+            <div class="section-header">
+                <h3>Available Widgets</h3>
+                <p>Click on any widget to customize and generate code</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="productivity">Productivity</button>
+                    <button class="filter-btn" data-category="social">Social</button>
+                    <button class="filter-btn" data-category="utility">Utility</button>
+                    <button class="filter-btn" data-category="lifestyle">Lifestyle</button>
+                </div>
+            </div>
+
+            <div class="widgets-grid" id="widgetsGrid">
+                <!-- Widget cards will be dynamically generated -->
+            </div>
+        </section>
+
+        <!-- Widget Detail Modal -->
+        <div class="modal" id="widgetModal">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Widget Configuration</h3>
+                    <button class="close-btn" id="closeModal" aria-label="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-left">
+                        <div class="widget-preview">
+                            <h4>Preview</h4>
+                            <div class="preview-container">
+                                <img id="previewImage" src="" alt="Widget Preview" loading="lazy">
+                                <div class="preview-overlay">
+                                    <div class="size-selector">
+                                        <button class="size-btn active" data-size="small">Small</button>
+                                        <button class="size-btn" data-size="medium">Medium</button>
+                                        <button class="size-btn" data-size="large">Large</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-info">
+                            <h4>Description</h4>
+                            <p id="widgetDescription"></p>
+                            <div class="widget-features">
+                                <h5>Features</h5>
+                                <ul id="widgetFeatures"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-right">
+                        <div class="configuration-panel">
+                            <h4>Configuration</h4>
+                            <div class="config-form" id="configForm">
+                                <!-- Dynamic configuration fields will be inserted here -->
+                            </div>
+                        </div>
+                        <div class="output-panel">
+                            <h4>Generated Code</h4>
+                            <div class="code-actions">
+                                <button class="action-btn" id="copyCode">
+                                    <i class="fas fa-copy"></i>
+                                    Copy Code
+                                </button>
+                                <button class="action-btn" id="downloadCode">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                                <button class="action-btn" id="generateQR">
+                                    <i class="fas fa-qrcode"></i>
+                                    QR Code
+                                </button>
+                            </div>
+                            <div class="code-container">
+                                <pre><code class="language-javascript" id="generatedCode"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div class="modal" id="qrModal">
+            <div class="modal-overlay" id="qrModalOverlay"></div>
+            <div class="modal-content qr-modal">
+                <div class="modal-header">
+                    <h3>QR Code</h3>
+                    <button class="close-btn" id="closeQRModal" aria-label="Close QR modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="qr-container">
+                        <canvas id="qrCanvas"></canvas>
+                        <p>Scan this QR code to open the widget in Scriptable</p>
+                        <div class="qr-actions">
+                            <button class="action-btn" id="downloadQR">
+                                <i class="fas fa-download"></i>
+                                Download QR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading widgets...</p>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">
+            <div class="toast-content">
+                <i class="toast-icon"></i>
+                <span class="toast-message"></span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Scriptable Widget Playground</h4>
+                    <p>Made with ❤️ for the Scriptable community</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="https://scriptable.app" target="_blank" rel="noopener noreferrer">Scriptable App</a></li>
+                        <li><a href="https://github.com/rushhiii/Scriptable-Widgets" target="_blank" rel="noopener noreferrer">Widget Repository</a></li>
+                        <li><a href="https://docs.scriptable.app" target="_blank" rel="noopener noreferrer">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Connect</h5>
+                    <ul>
+                        <li><a href="https://github.com/rushhiii" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                        <li><a href="https://rushi-bashfolio.netlify.app" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rushi. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    
+    <!-- Local Scripts -->
+    <script src="scripts/widgets-data.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

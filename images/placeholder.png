@@ -1,0 +1,10 @@
+<!-- Placeholder SVG for widget previews when images are not available -->
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="200" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+    <text x="150" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#666">
+        Widget Preview
+    </text>
+    <text x="150" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#999">
+        Image coming soon...
+    </text>
+</svg>

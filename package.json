@@ -1,0 +1,37 @@
+{
+  "name": "scriptable-widget-playground",
+  "version": "1.0.0",
+  "description": "Interactive playground for Scriptable iOS widgets - customize, preview, and generate code",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000 --open=/ --watch=.",
+    "dev": "live-server --port=3000 --open=/ --watch=.",
+    "build": "echo 'Static site - no build process needed'",
+    "deploy": "gh-pages -d . --exclude node_modules",
+    "preview": "http-server . -p 3000 -o"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "http-server": "^14.1.1",
+    "gh-pages": "^6.1.1"
+  },
+  "keywords": [
+    "scriptable",
+    "ios",
+    "widgets",
+    "playground",
+    "javascript",
+    "customization",
+    "code-generator"
+  ],
+  "author": "Rushi",
+  "license": "MIT",
+  "homepage": "https://rushhiii.github.io/Scriptable-Playground",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rushhiii/Scriptable-Playground.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rushhiii/Scriptable-Playground/issues"
+  }
+}
