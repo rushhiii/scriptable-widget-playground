@@ -13,9 +13,9 @@ const WIDGETS_DATA = {
             'Customizable colors'
         ],
         preview: {
-            small: 'images/previews/github-stats-small.png',
-            medium: 'images/previews/github-stats-medium.png',
-            large: 'images/previews/github-stats-large.png'
+            small: 'images/previews/githubstats_s.png',
+            medium: 'images/previews/githubstats_m.png',
+            large: 'images/previews/githubstats_l.png'
         },
         config: {
             username: {
@@ -35,7 +35,7 @@ const WIDGETS_DATA = {
             theme: {
                 type: 'select',
                 label: 'Theme',
-                required: true,
+                required: false,
                 options: [
                     { value: 'auto', label: 'Auto (System)' },
                     { value: 'blue', label: 'Blue' },
