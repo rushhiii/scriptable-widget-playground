@@ -611,20 +611,16 @@ html {
 }
 
 .widget-features {
-    /* display: flex; */
-    /* gap: 0.5rem; */
-    /* flex-wrap: wrap; */
-    /* margin-top: auto; */
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: auto;
     padding-top: 1rem;
     padding-left: 1rem;
     border-top: 1px solid var(--separator-color);
 }
 
-.widget-features h5 {
-    /* display: block; */
-    /* margin-right: 1rem; */
-    /* font-size: 1rem; */
-}
+
 
 .feature-tag {
     background: linear-gradient(135deg, var(--fill-color), var(--fill-secondary));
