@@ -154,10 +154,8 @@ MIT License - feel free to use this project for personal or commercial purposes.
 
 ## 📞 Support
 
-- **GitHub Issues** - Report bugs and request features
-- **Portfolio** - [rushi-bashfolio.netlify.app](https://rushi-bashfolio.netlify.app)
 - **GitHub** - [@rushhiii](https://github.com/rushhiii)
 
----
+##
 
-**Made with ❤️ for the Scriptable community by Rushi**
+<p align="center">Made with ❤️ for the Scriptable community by Rushi</p>
