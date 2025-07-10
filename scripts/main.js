@@ -713,7 +713,7 @@ class ScriptablePlayground {
 
 // Global utility functions
 function scrollToWidgets() {
-    const widgetsSection = document.getElementById('widgets');
+    const widgetsSection = document.getElementById('widgetsSection');
     if (widgetsSection) {
         widgetsSection.scrollIntoView({ behavior: 'smooth' });
     }

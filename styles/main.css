@@ -421,12 +421,13 @@ html {
 
 .section-header p {
     color: var(--text-secondary);
-    margin-bottom: 2.5rem;
+    /* margin-bottom: 2.5rem; */
     font-size: 1.1rem;
     line-height: 1.6;
 }
 
 .filters {
+    padding-top: 2.5rem;
     display: flex;
     justify-content: center;
     gap: 0.5rem;
@@ -765,7 +766,7 @@ html {
     border-radius: var(--border-radius);
     padding: 1rem;
     /* border: 1px solid var(--border-color); */
-    box-shadow: var(--shadow-light);
+    /* box-shadow: var(--shadow-light); */
 }
 
 .widget-preview h4,
