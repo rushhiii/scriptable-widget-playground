@@ -616,11 +616,17 @@ html {
     flex-wrap: wrap;
     margin-top: auto;
     padding-top: 1rem;
-    padding-left: 1rem;
     border-top: 1px solid var(--separator-color);
 }
 
-
+.widget-info .widget-features {
+    display: block;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-left: 1rem;
+    /* border-top: 1px solid var(--separator-color); */
+}
 
 .feature-tag {
     background: linear-gradient(135deg, var(--fill-color), var(--fill-secondary));
@@ -756,10 +762,10 @@ html {
 .configuration-panel,
 .output-panel {
     background: var(--bg-elevated);
-    /* border-radius: var(--border-radius); */
-    /* padding: 1.5rem; */
+    border-radius: var(--border-radius);
+    padding: 1rem;
     /* border: 1px solid var(--border-color); */
-    /* box-shadow: var(--shadow-light); */
+    box-shadow: var(--shadow-light);
 }
 
 .widget-preview h4,
