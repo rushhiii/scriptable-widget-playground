@@ -13,9 +13,23 @@ const WIDGETS_DATA = {
             'Customizable colors'
         ],
         preview: {
-            small: 'images/previews/githubstats_s.png',
-            medium: 'images/previews/githubstats_m.png',
-            large: 'images/previews/githubstats_l.png'
+            small: [
+                'images/previews/githubstats/githubstats_s_1.png',
+                'images/previews/githubstats/githubstats_s_2.png',
+                'images/previews/githubstats/githubstats_s_6.png',
+                'images/previews/githubstats/github_stats_s_3.PNG'
+            ],
+            medium: [
+                'images/previews/githubstats/githubstats_m_1.png',
+                'images/previews/githubstats/githubstats_m_4.png',
+                'images/previews/githubstats/github_stats_m.png',
+                'images/previews/githubstats/github_stats_m_3.PNG',
+                'images/previews/githubstats/github_stats_m_4.PNG',
+                'images/previews/githubstats/github_stats_m_5.png'
+            ],
+            large: [
+                'images/previews/githubstats/githubstats_l.png'
+            ]
         },
         config: {
             username: {
@@ -57,45 +71,7 @@ const WIDGETS_DATA = {
                 default: 'medium'
             }
         },
-        template: `// icon-color: black; icon-glyph: chalkboard-teacher;
-
-const username = "{{username}}"; // replace with your github username
-const token = Keychain.get("github_token"); // replace this with your token
-
-const size = config.widgetFamily || "{{size}}";
-
-const themePresets = {
-  auto: Device.isUsingDarkAppearance()
-    ? { colors: ["#000244", "#000233", "#000000"], locations: [0.0, 0.5, 1.0], head: "#ffffff", text: "#909692", acc: "#3094ff" }
-    : { colors: ["#e6f2f1", "#bff2c2"], locations: [0, 1], head: "#000000", text: "#5a615c", acc: "#006edb" },
-
-  blue: {
-    colors: ["#0A0C1C", "#121C3C", "#263B73"],
-    locations: [0, 0.5, 1],
-    head: "#ffffff",
-    text: "#c0c0c0",
-    acc: "#8ac7ff"
-  },
-  gray: {
-    colors: ["#202631", "#2D3440", "#3C4454", "#525D6F", "#7A8699"],
-    locations: [0.0, 0.25, 0.5, 0.75, 1.0],
-    head: "#EAEAEA",
-    text: "#C7CCD5",
-    acc: "#8AB4F8"
-  },
-  night: {
-    colors: ["#000000", "#04050A", "#0A0F1A", "#111827"],
-    locations: [0.0, 0.4, 0.75, 1.0],
-    head: "#ffffff",
-    text: "#ffffff",
-    acc: "#8AB4F8"
-  }
-};
-
-const theme = themePresets["{{theme}}"] || themePresets.auto;
-
-// Rest of the GitHub Stats widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/MyGitStats-v2.0.js'
     },
 
     'countdown': {
@@ -111,9 +87,20 @@ const theme = themePresets["{{theme}}"] || themePresets.auto;
             'Birthday countdown'
         ],
         preview: {
-            small: 'images/previews/countdown-small.png',
-            medium: 'images/previews/countdown-medium.png',
-            large: 'images/previews/countdown-large.png'
+            small: [
+                'images/previews/countdown/countdown_s.PNG',
+                'images/previews/countdown/countdown_1_s.PNG',
+                'images/previews/countdown/countdown_age_s.PNG',
+                'images/previews/countdown/countdown_bday_s.PNG'
+            ],
+            medium: [
+                'images/previews/countdown/countdown_m.PNG',
+                'images/previews/countdown/countdown_col_m.PNG'
+            ],
+            large: [
+                'images/previews/countdown/countdown_l.PNG',
+                'images/previews/countdown/countdown_col_l.png'
+            ]
         },
         config: {
             apiUrl: {
@@ -142,43 +129,7 @@ const theme = themePresets["{{theme}}"] || themePresets.auto;
                 help: 'Display emoji icons for events'
             }
         },
-        template: `// icon-color: brown; icon-glyph: calendar-check;
-
-// === CONFIG ===
-const SHEET_API_URL = "{{apiUrl}}"; // YOUR API URL here
-const colorPalette = ["#CB2443", "#8e44ad", "#2980b9", "#F79F39", "#CEA834", "#7b9a50"];
-
-// === Fetch Data from Google Sheets Web App ===
-const req = new Request(SHEET_API_URL);
-
-// === Local cache setup ===
-const fm = FileManager.iCloud();
-const dataDir = fm.joinPath(fm.documentsDirectory(), ".cache");
-if (!fm.fileExists(dataDir)) fm.createDirectory(dataDir);
-
-const dataPath = fm.joinPath(dataDir, "events_cache.json");
-
-// Fetch data from online or fallback to local cache
-async function loadEventData() {
-  try {
-    const req = new Request(SHEET_API_URL);
-    const data = await req.loadJSON();
-    fm.writeString(dataPath, JSON.stringify(data));
-    return data;
-  } catch (e) {
-    if (fm.fileExists(dataPath)) {
-      const data = JSON.parse(fm.readString(dataPath));
-      return data;
-    } else {
-      throw new Error("No data available online or locally.");
-    }
-  }
-}
-
-const events = await loadEventData();
-
-// Rest of the Countdown widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/MyCountdowns.js'
     },
 
     'quotes': {
@@ -194,9 +145,22 @@ const events = await loadEventData();
             'Philosopher collections'
         ],
         preview: {
-            small: 'images/previews/quotes-small.png',
-            medium: 'images/previews/quotes-medium.png',
-            large: 'images/previews/quotes-large.png'
+            small: [
+                'images/previews/quotes/quote_s.png',
+                'images/previews/quotes/quote_s_1.png',
+                'images/previews/quotes/quote_s_2.png',
+                'images/previews/quotes/quote_s_3.png'
+            ],
+            medium: [
+                'images/previews/quotes/quote_m_1.png',
+                'images/previews/quotes/quote_m_2.png',
+                'images/previews/quotes/quote_m_3.png',
+                'images/previews/quotes/quote_m_4.png'
+            ],
+            large: [
+                'images/previews/quotes/quote_l_1.png',
+                'images/previews/quotes/quote_l_2.png'
+            ]
         },
         config: {
             category: {
@@ -233,54 +197,7 @@ const events = await loadEventData();
                 help: 'Force a specific quote by index number'
             }
         },
-        template: `// icon-color: purple; icon-glyph: quote-right;
-
-// === Start: Param Handling ===
-const defaultCategory = "{{category}}";
-const defaultSize = config.widgetFamily === "small" ? "s" : config.widgetFamily === "medium" ? "m" : "l";
-const validSizes = ["s", "m", "l"];
-const validCategories = ["myquotes", "gita", "test", "zen", "machiavelli", "aurelius", "fyodor", "kafka"];
-
-const param = args.widgetParameter ? args.widgetParameter.trim().toLowerCase() : defaultCategory;
-const parts = param.split(",");
-let category = defaultCategory;
-let sizeParam = "{{widgetSize}}";
-let forcedIndex = {{forceIndex}} || null;
-
-for (const p of parts) {
-  const trimmed = p.trim();
-  if (validCategories.includes(trimmed)) {
-    category = trimmed;
-  } else if (validSizes.includes(trimmed)) {
-    sizeParam = trimmed;
-  } else if (!isNaN(parseInt(trimmed))) {
-    forcedIndex = parseInt(trimmed);
-  }
-}
-
-// Determine widget size fallback
-let widgetSize;
-if (validSizes.includes(sizeParam)) {
-  widgetSize = sizeParam;
-} else if (config.widgetFamily === "medium") {
-  widgetSize = "m";
-} else if (config.widgetFamily === "large") {
-  widgetSize = "l";
-} else {
-  widgetSize = "s";
-}
-
-// If category is invalid, just refresh and exit
-if (!validCategories.includes(category)) {
-  console.warn("⚠️ Invalid category. Refreshing...");
-  Script.complete();
-  return;
-}
-
-const fm = FileManager.iCloud();
-
-// Rest of the Quote widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/MyQuotes.js'
     },
 
     'weather': {
@@ -296,9 +213,17 @@ const fm = FileManager.iCloud();
             'Location-based'
         ],
         preview: {
-            small: 'images/previews/weather-small.png',
-            medium: 'images/previews/weather-medium.png',
-            large: 'images/previews/weather-large.png'
+            small: [
+                'images/previews/weather/weather_s_1.PNG',
+                'images/previews/weather/weather_s_2.png',
+                'images/previews/weather/weather_showcase_s.png'
+            ],
+            medium: [
+                'images/previews/weather/weather_showcase.png'
+            ],
+            large: [
+                'images/previews/weather/weather_showcase.png'
+            ]
         },
         config: {
             apiKey: {
@@ -327,33 +252,7 @@ const fm = FileManager.iCloud();
                 default: 'metric'
             }
         },
-        template: `// icon-color: cyan; icon-glyph: cloud-sun;
-
-// === Weather Configuration ===
-const API_KEY = "{{apiKey}}";
-const LOCATION = "{{location}}" || null;
-const UNITS = "{{units}}";
-
-// === Weather API Setup ===
-async function getWeatherData() {
-    let url;
-    if (LOCATION) {
-        url = \`https://api.openweathermap.org/data/2.5/weather?q=\${LOCATION}&appid=\${API_KEY}&units=\${UNITS}\`;
-    } else {
-        Location.setAccuracyToThreeKilometers();
-        const location = await Location.current();
-        url = \`https://api.openweathermap.org/data/2.5/weather?lat=\${location.latitude}&lon=\${location.longitude}&appid=\${API_KEY}&units=\${UNITS}\`;
-    }
-    
-    const req = new Request(url);
-    return await req.loadJSON();
-}
-
-// Get weather data
-const weather = await getWeatherData();
-
-// Rest of the Weather widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/MinimalWeather.js'
     },
 
     'time-progress': {
@@ -369,9 +268,22 @@ const weather = await getWeatherData();
             'Visual indicators'
         ],
         preview: {
-            small: 'images/previews/time-progress-small.png',
-            medium: 'images/previews/time-progress-medium.png',
-            large: 'images/previews/time-progress-large.png'
+            small: [
+                'images/previews/timeprogress/timeprogress_s_1.png',
+                'images/previews/timeprogress/timeprogress_s_2.png',
+                'images/previews/timeprogress/timeprogress_s_3.png',
+                'images/previews/timeprogress/timeprogress_s_4.png',
+                'images/previews/timeprogress/timeprogress_s_5.png',
+                'images/previews/timeprogress/timeprogress_s_6.png',
+                'images/previews/timeprogress/timeprogress_s_7.png'
+            ],
+            medium: [
+                'images/previews/timeprogress/timeprogress_m_1.png',
+                'images/previews/timeprogress/timeprogress_m_2.png'
+            ],
+            large: [
+                'images/previews/timeprogress/timeprogress_l.png'
+            ]
         },
         config: {
             showYear: {
@@ -408,36 +320,7 @@ const weather = await getWeatherData();
                 default: 'blue'
             }
         },
-        template: `// icon-color: orange; icon-glyph: clock;
-
-// === Time Progress Configuration ===
-const SHOW_YEAR = {{showYear}};
-const SHOW_MONTH = {{showMonth}};
-const SHOW_WEEK = {{showWeek}};
-const SHOW_DAY = {{showDay}};
-const COLOR_THEME = "{{colorTheme}}";
-
-// === Color Themes ===
-const colorThemes = {
-    blue: { primary: "#007AFF", secondary: "#5AC8FA", background: "#E5F4FF" },
-    green: { primary: "#34C759", secondary: "#7ED321", background: "#E8F5E8" },
-    orange: { primary: "#FF9500", secondary: "#FFCC02", background: "#FFF4E6" },
-    purple: { primary: "#5856D6", secondary: "#AF52DE", background: "#F0EFFF" },
-    gradient: { primary: "#007AFF", secondary: "#5856D6", background: "#F0F0F0" }
-};
-
-const theme = colorThemes[COLOR_THEME] || colorThemes.blue;
-
-// === Time Calculations ===
-const now = new Date();
-const currentYear = now.getFullYear();
-const currentMonth = now.getMonth();
-const currentDay = now.getDate();
-const currentHour = now.getHours();
-const currentMinute = now.getMinutes();
-
-// Rest of the Time Progress widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/ModularTimeProgress.js'
     },
 
     'aqi': {
@@ -453,9 +336,15 @@ const currentMinute = now.getMinutes();
             'Air quality tips'
         ],
         preview: {
-            small: 'images/previews/aqi-small.png',
-            medium: 'images/previews/aqi-medium.png',
-            large: 'images/previews/aqi-large.png'
+            small: [
+                'images/placeholder.png'
+            ],
+            medium: [
+                'images/placeholder.png'
+            ],
+            large: [
+                'images/placeholder.png'
+            ]
         },
         config: {
             apiKey: {
@@ -479,42 +368,7 @@ const currentMinute = now.getMinutes();
                 help: 'Display health recommendations based on AQI'
             }
         },
-        template: `// icon-color: green; icon-glyph: leaf;
-
-// === AQI Configuration ===
-const API_KEY = "{{apiKey}}";
-const LOCATION = "{{location}}" || null;
-const SHOW_TIPS = {{showTips}};
-
-// === AQI API Setup ===
-async function getAQIData() {
-    let url;
-    if (LOCATION) {
-        url = \`http://api.openweathermap.org/data/2.5/air_pollution?q=\${LOCATION}&appid=\${API_KEY}\`;
-    } else {
-        Location.setAccuracyToThreeKilometers();
-        const location = await Location.current();
-        url = \`http://api.openweathermap.org/data/2.5/air_pollution?lat=\${location.latitude}&lon=\${location.longitude}&appid=\${API_KEY}\`;
-    }
-    
-    const req = new Request(url);
-    return await req.loadJSON();
-}
-
-// AQI Color mapping
-const aqiColors = {
-    1: { color: "#00E400", label: "Good" },
-    2: { color: "#FFFF00", label: "Fair" },
-    3: { color: "#FF7E00", label: "Moderate" },
-    4: { color: "#FF0000", label: "Poor" },
-    5: { color: "#8F3F97", label: "Very Poor" }
-};
-
-// Get AQI data
-const aqiData = await getAQIData();
-
-// Rest of the AQI widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/OpenWeatherAQI.js'
     },
 
     'birthday': {
@@ -530,9 +384,15 @@ const aqiData = await getAQIData();
             'Custom events'
         ],
         preview: {
-            small: 'images/previews/birthday-small.png',
-            medium: 'images/previews/birthday-medium.png',
-            large: 'images/previews/birthday-large.png'
+            small: [
+                'images/previews/birthday/birthday_s.png'
+            ],
+            medium: [
+                'images/previews/birthday/birthday_showcase.png'
+            ],
+            large: [
+                'images/previews/birthday/birthday_showcase.png'
+            ]
         },
         config: {
             name: {
@@ -567,36 +427,7 @@ const aqiData = await getAQIData();
                 default: 'celebration'
             }
         },
-        template: `// icon-color: pink; icon-glyph: birthday-cake;
-
-// === Birthday Configuration ===
-const PERSON_NAME = "{{name}}";
-const BIRTHDAY = "{{birthday}}";
-const SHOW_AGE = {{showAge}};
-const THEME = "{{theme}}";
-
-// === Date Calculations ===
-const today = new Date();
-const birthDate = new Date(BIRTHDAY);
-const thisYear = today.getFullYear();
-const nextBirthday = new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
-
-// If birthday has passed this year, calculate for next year
-if (nextBirthday < today) {
-    nextBirthday.setFullYear(thisYear + 1);
-}
-
-// Calculate age
-const age = thisYear - birthDate.getFullYear();
-const hasHadBirthdayThisYear = today >= new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
-const currentAge = hasHadBirthdayThisYear ? age : age - 1;
-
-// Calculate days until birthday
-const millisecondsPerDay = 24 * 60 * 60 * 1000;
-const daysUntilBirthday = Math.ceil((nextBirthday - today) / millisecondsPerDay);
-
-// Rest of the Birthday widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/HowOldmi.js'
     },
 
     'schedule': {
@@ -612,9 +443,17 @@ const daysUntilBirthday = Math.ceil((nextBirthday - today) / millisecondsPerDay)
             'Color coding'
         ],
         preview: {
-            small: 'images/previews/schedule-small.png',
-            medium: 'images/previews/schedule-medium.png',
-            large: 'images/previews/schedule-large.png'
+            small: [
+                'images/previews/schedule/schedule_s.png',
+                'images/previews/schedule/schedule_s_1.png'
+            ],
+            medium: [
+                'images/previews/schedule/schedule_m.png'
+            ],
+            large: [
+                'images/previews/schedule/schedule_l.png',
+                'images/previews/schedule/schedule_l_1.png'
+            ]
         },
         config: {
             scheduleType: {
@@ -649,38 +488,7 @@ const daysUntilBirthday = Math.ceil((nextBirthday - today) / millisecondsPerDay)
                 help: 'Display classroom/room information'
             }
         },
-        template: `// icon-color: blue; icon-glyph: calendar-alt;
-
-// === Schedule Configuration ===
-const SCHEDULE_TYPE = "{{scheduleType}}";
-const TIMEZONE = "{{timezone}}";
-const SHOW_ROOMS = {{showRooms}};
-
-// === Schedule Data Structure ===
-const scheduleData = {
-    Monday: [
-        { time: "09:00", subject: "Mathematics", room: "Room 101", duration: 60 },
-        { time: "11:00", subject: "Physics", room: "Lab 201", duration: 90 },
-        { time: "14:00", subject: "Computer Science", room: "Room 305", duration: 75 }
-    ],
-    Tuesday: [
-        { time: "10:00", subject: "Chemistry", room: "Lab 102", duration: 90 },
-        { time: "13:00", subject: "English", room: "Room 205", duration: 50 }
-    ],
-    // Add more days as needed...
-};
-
-// === Get Current Day and Time ===
-const now = new Date();
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const currentDay = days[now.getDay()];
-const currentTime = now.getHours() * 60 + now.getMinutes(); // Convert to minutes
-
-// Get today's schedule
-const todaySchedule = scheduleData[currentDay] || [];
-
-// Rest of the Schedule widget code...
-// [Widget implementation continues...]`
+        templateFile: 'widgets/MyUniSchedule.js'
     }
 };
 

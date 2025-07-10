@@ -12,6 +12,7 @@ class ScriptablePlayground {
     init() {
         this.setupTheme();
         this.setupEventListeners();
+        // this.setupScrollAnimations(); // Temporarily disabled
         this.renderWidgets();
         this.updateWidgetCount();
     }
@@ -125,6 +126,7 @@ class ScriptablePlayground {
         const card = document.createElement('div');
         card.className = 'widget-card';
         card.dataset.category = widget.category;
+        card.dataset.widgetId = id;
 
         card.innerHTML = `
             <div class="widget-card-header">
@@ -137,14 +139,32 @@ class ScriptablePlayground {
                 </div>
             </div>
             <p class="widget-description">${widget.description}</p>
-            <img class="widget-preview-img" src="${widget.preview.medium}" alt="${widget.name} preview" loading="lazy" onerror="this.src='images/placeholder.png'">
+            <div class="widget-preview-slideshow">
+                <div class="slideshow-container">
+                    ${this.generateSlideshowHTML(widget.preview)}
+                </div>
+                <div class="slideshow-nav">
+                    <button class="nav-btn prev" onclick="event.stopPropagation(); app.changeSlide('${id}', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-btn next" onclick="event.stopPropagation(); app.changeSlide('${id}', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="slideshow-indicators">
+                    ${this.generateIndicatorsHTML(widget.preview, id)}
+                </div>
+            </div>
             <div class="widget-features">
                 ${widget.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
             </div>
         `;
 
-        card.addEventListener('click', () => {
-            this.openWidgetModal(id, widget);
+        // Set up slideshow auto-play
+        this.setupCardSlideshow(card, id, widget.preview);
+
+        card.addEventListener('click', async () => {
+            await this.openWidgetModal(id, widget);
         });
 
         return card;
@@ -169,14 +189,27 @@ class ScriptablePlayground {
         activeBtn.classList.add('active');
     }
 
-    openWidgetModal(id, widget) {
+    async openWidgetModal(id, widget) {
         this.currentWidget = { id, ...widget };
         this.currentConfig = {};
 
         // Set modal content
         document.getElementById('modalTitle').textContent = `${widget.name} Configuration`;
         document.getElementById('widgetDescription').textContent = widget.description;
-        document.getElementById('previewImage').src = widget.preview.medium;
+
+        // Setup modal slideshow
+        const modalContainer = document.querySelector('.modal-slideshow-container');
+        if (modalContainer && widget.preview) {
+            modalContainer.innerHTML = this.generateModalSlideshowHTML(widget.preview);
+
+            // Show small preview by default (first image)
+            this.changeModalSlide('small', 0);
+
+            // Set up slideshow for small size by default
+            this.setupModalSlideshow('small');
+        } else {
+            console.error('Modal container not found or widget preview not available');
+        }
 
         // Set features
         const featuresList = document.getElementById('widgetFeatures');
@@ -186,7 +219,7 @@ class ScriptablePlayground {
         this.generateConfigForm(widget.config);
 
         // Generate initial code
-        this.generateCode();
+        await this.generateCode();
 
         // Show modal
         document.getElementById('widgetModal').classList.add('active');
@@ -270,13 +303,27 @@ class ScriptablePlayground {
 
     updateConfig(key, value) {
         this.currentConfig[key] = value;
-        this.generateCode();
+        this.generateCode(); // This is okay - we don't need to await here
     }
 
-    generateCode() {
+    async generateCode() {
         if (!this.currentWidget) return;
 
-        let code = this.currentWidget.template;
+        let code;
+
+        // Load template from external file if templateFile is specified
+        if (this.currentWidget.templateFile) {
+            try {
+                const response = await fetch(this.currentWidget.templateFile);
+                code = await response.text();
+            } catch (error) {
+                console.error('Failed to load template file:', error);
+                code = '// Error loading template file';
+            }
+        } else {
+            // Fallback to embedded template
+            code = this.currentWidget.template || '// No template available';
+        }
 
         // Replace template variables
         Object.entries(this.currentConfig).forEach(([key, value]) => {
@@ -284,7 +331,7 @@ class ScriptablePlayground {
             code = code.replace(regex, value);
         });
 
-        // Clean up any remaining placeholders
+        // Clean up any remaining placeholders with empty values
         code = code.replace(/\\{\\{\\w+\\}\\}/g, '');
 
         // Update code display
@@ -295,13 +342,45 @@ class ScriptablePlayground {
         if (window.Prism) {
             window.Prism.highlightElement(codeElement);
         }
-    }
-
-    changePreviewSize(size) {
+    } changePreviewSize(size) {
         if (!this.currentWidget) return;
 
-        const previewImage = document.getElementById('previewImage');
-        previewImage.src = this.currentWidget.preview[size] || this.currentWidget.preview.medium;
+        // Show the first image of the selected size
+        this.changeModalSlide(size, 0);
+
+        // Start slideshow for this size category
+        this.setupModalSlideshow(size);
+    }
+
+    changeModalSlide(size, imageIndex) {
+        const modalSlides = document.querySelectorAll('.modal-slideshow-container .slide');
+
+        // Remove active class from all slides
+        modalSlides.forEach(slide => slide.classList.remove('active'));
+
+        // Find and activate the target slide
+        const targetSlide = document.querySelector(`.modal-slideshow-container .slide[data-size="${size}"][data-image-index="${imageIndex}"]`);
+        if (targetSlide) {
+            targetSlide.classList.add('active');
+        }
+    }
+
+    setupModalSlideshow(size) {
+        // Clear any existing interval
+        if (this.modalSlideshowInterval) {
+            clearInterval(this.modalSlideshowInterval);
+        }
+
+        if (!this.currentWidget) return;
+
+        const sizeImages = this.currentWidget.preview[size];
+        if (sizeImages.length <= 1) return; // No need for slideshow if only one image
+
+        let currentIndex = 0;
+        this.modalSlideshowInterval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % sizeImages.length;
+            this.changeModalSlide(size, currentIndex);
+        }, 3000); // Change every 3 seconds
     }
 
     updateActiveSizeBtn(activeBtn) {
@@ -400,6 +479,12 @@ class ScriptablePlayground {
     closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
         document.body.style.overflow = 'auto';
+
+        // Clear modal slideshow interval
+        if (this.modalSlideshowInterval) {
+            clearInterval(this.modalSlideshowInterval);
+            this.modalSlideshowInterval = null;
+        }
     }
 
     showToast(message, type = 'info') {
@@ -443,44 +528,200 @@ class ScriptablePlayground {
     hideLoading() {
         document.getElementById('loading').classList.remove('active');
     }
+
+    setupScrollAnimations() {
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+
+                    // Special handling for widgets grid
+                    if (entry.target.classList.contains('widgets-grid')) {
+                        // Animate widget cards with stagger effect
+                        setTimeout(() => {
+                            const cards = entry.target.querySelectorAll('.widget-card');
+                            cards.forEach((card, index) => {
+                                setTimeout(() => {
+                                    card.style.animationDelay = `${index * 0.1}s`;
+                                    card.style.animationPlayState = 'running';
+                                }, index * 100);
+                            });
+                        }, 200);
+                    }
+
+                    // Special handling for filters
+                    if (entry.target.classList.contains('filters')) {
+                        setTimeout(() => {
+                            const filterBtns = entry.target.querySelectorAll('.filter-btn');
+                            filterBtns.forEach((btn, index) => {
+                                setTimeout(() => {
+                                    btn.style.animationDelay = `${index * 0.1}s`;
+                                    btn.style.animationPlayState = 'running';
+                                }, index * 50);
+                            });
+                        }, 300);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements that should animate on scroll
+        const animatedElements = document.querySelectorAll('.section-header, .filters, .widgets-grid');
+        animatedElements.forEach(el => observer.observe(el));
+
+        // Add scroll event for additional effects
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    }
+
+    handleScroll() {
+        const scrollY = window.scrollY;
+        const hero = document.querySelector('.hero');
+
+        if (hero) {
+            // Parallax effect for hero background
+            hero.style.transform = `translateY(${scrollY * 0.5}px)`;
+
+            // Fade out hero content on scroll
+            const heroContent = hero.querySelector('.hero-content');
+            if (heroContent) {
+                const opacity = Math.max(0, 1 - (scrollY / (hero.offsetHeight * 0.8)));
+                heroContent.style.opacity = opacity;
+            }
+        }
+    }    // Slideshow functionality
+    setupCardSlideshow(card, widgetId, preview) {
+        const totalImages = preview.small.length + preview.medium.length + preview.large.length;
+
+        card.dataset.currentSlide = 0;
+        card.dataset.widgetId = widgetId;
+        card.dataset.totalSlides = totalImages;
+
+        // Auto-play slideshow
+        const interval = setInterval(() => {
+            if (document.body.contains(card)) {
+                this.changeSlide(widgetId, 1);
+            } else {
+                clearInterval(interval);
+            }
+        }, 3000); // Change slide every 3 seconds
+    }
+
+    changeSlide(widgetId, direction) {
+        const card = document.querySelector(`[data-widget-id="${widgetId}"]`);
+        if (!card) return;
+
+        const slides = card.querySelectorAll('.slide');
+        const indicators = card.querySelectorAll('.indicator');
+        const currentSlide = parseInt(card.dataset.currentSlide) || 0;
+        const totalSlides = parseInt(card.dataset.totalSlides) || slides.length;
+
+        // Remove active class from current slide and indicator
+        slides[currentSlide].classList.remove('active');
+        indicators[currentSlide].classList.remove('active');
+
+        // Calculate new slide index
+        let newSlide = currentSlide + direction;
+        if (newSlide >= totalSlides) newSlide = 0;
+        if (newSlide < 0) newSlide = totalSlides - 1;
+
+        // Add active class to new slide and indicator
+        slides[newSlide].classList.add('active');
+        indicators[newSlide].classList.add('active');
+
+        // Update current slide
+        card.dataset.currentSlide = newSlide;
+    }
+
+    goToSlide(widgetId, slideIndex) {
+        const card = document.querySelector(`[data-widget-id="${widgetId}"]`);
+        if (!card) return;
+
+        const slides = card.querySelectorAll('.slide');
+        const indicators = card.querySelectorAll('.indicator');
+        const currentSlide = parseInt(card.dataset.currentSlide) || 0;
+
+        // Remove active class from current slide and indicator
+        slides[currentSlide].classList.remove('active');
+        indicators[currentSlide].classList.remove('active');
+
+        // Add active class to target slide and indicator
+        slides[slideIndex].classList.add('active');
+        indicators[slideIndex].classList.add('active');
+
+        // Update current slide
+        card.dataset.currentSlide = slideIndex;
+    }
+
+    setupModalSlideshow() {
+        const modalSlides = document.querySelectorAll('.modal-slideshow-container .slide');
+        modalSlides.forEach((slide, index) => {
+            slide.dataset.slideIndex = index;
+        });
+    }
+
+    generateSlideshowHTML(preview) {
+        const allImages = [...preview.small, ...preview.medium, ...preview.large];
+        const sizeLabels = [
+            ...preview.small.map(() => 'Small'),
+            ...preview.medium.map(() => 'Medium'),
+            ...preview.large.map(() => 'Large')
+        ];
+
+        return allImages.map((src, index) => `
+            <div class="slide ${index === 0 ? 'active' : ''}">
+                <img src="${src}" alt="Widget preview" loading="lazy" onerror="this.src='images/placeholder.png'">
+                <div class="slide-label">${sizeLabels[index]}</div>
+            </div>
+        `).join('');
+    }
+
+    generateIndicatorsHTML(preview, widgetId) {
+        const totalImages = preview.small.length + preview.medium.length + preview.large.length;
+        return Array.from({ length: totalImages }, (_, index) =>
+            `<span class="indicator ${index === 0 ? 'active' : ''}" onclick="event.stopPropagation(); app.goToSlide('${widgetId}', ${index})"></span>`
+        ).join('');
+    }
+
+    generateModalSlideshowHTML(preview) {
+        const sizes = ['small', 'medium', 'large'];
+        return sizes.map((size, sizeIndex) =>
+            preview[size].map((src, imageIndex) => `
+                <div class="slide ${sizeIndex === 0 && imageIndex === 0 ? 'active' : ''}" data-size="${size}" data-image-index="${imageIndex}">
+                    <img src="${src}" alt="Widget preview" loading="lazy" onerror="this.src='images/placeholder.png'">
+                </div>
+            `).join('')
+        ).join('');
+    }
+
+    // ...existing code...
 }
 
-// Utility functions
+// Global utility functions
 function scrollToWidgets() {
-    const widgetsSection = document.getElementById('widgetsSection');
-    const headerHeight = document.querySelector('.header').offsetHeight;
-
-    // Calculate target position with some offset
-    const targetPosition = widgetsSection.offsetTop - headerHeight - 20;
-
-    // Use requestAnimationFrame for smoother scrolling
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    const duration = 800; // milliseconds
-    let startTime = null;
-
-    function animateScroll(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const run = ease(timeElapsed, startPosition, distance, duration);
-        window.scrollTo(0, run);
-        if (timeElapsed < duration) requestAnimationFrame(animateScroll);
+    const widgetsSection = document.getElementById('widgets');
+    if (widgetsSection) {
+        widgetsSection.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Ease function for smooth animation
-    function ease(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
-        t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
-    }
-
-    requestAnimationFrame(animateScroll);
 }
 
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ScriptablePlayground();
+    window.app = new ScriptablePlayground();
 });
 
 // Service Worker registration for PWA capabilities
